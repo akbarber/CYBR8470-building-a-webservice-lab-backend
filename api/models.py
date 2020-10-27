@@ -11,15 +11,15 @@ import base64
 class Dog(models.Model):
     name = models.CharField(max_length=1000, blank=False)
     age = models.IntegerField()
-    breed = models.ForeignKey(
+    breed = models.ForeignKey( #not done
         Breed, 
-        on_delete=models.CASCADE,
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE
     )
     gender = models.CharField(max_length=1000, blank=False)
     color = models.CharField(max_length=1000, blank=False)
     favoritefood = models.CharField(max_length=1000, blank=False)
     favoritetoy = models.CharField(max_length=1000, blank=False)
+    
 
 
 class Breed(models.Model):
