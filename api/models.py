@@ -8,29 +8,6 @@ from django.contrib.auth.models import User, Group
 from django.contrib import admin
 import base64
 
-class Dog(models.Model):
-    name = models.CharField(max_length=1000, blank=False)
-    age = models.IntegerField()
-    breed = models.ForeignKey( #not done
-        Breed, 
-        on_delete=models.CASCADE
-    )
-    gender = models.CharField(max_length=1000, blank=False)
-    color = models.CharField(max_length=1000, blank=False)
-    favoritefood = models.CharField(max_length=1000, blank=False)
-    favoritetoy = models.CharField(max_length=1000, blank=False)
-    
-
-
-class Breed(models.Model):
-    name = models.CharField(max_length=1000, blank=False)
-    size = models.CharField(max_length=1000, blank=False) #need to make sure only accepts the 4 options
-    friendliness = models.IntegerField(min_value=1, max_length=5, blank=False) #put in validator
-    trainability = models.IntegerField(min_value=1, max_length=5, blank=False)
-    sheddingamount = models.IntegerField(min_value=1, max_length=5, blank=False)
-    exerciseneeds = models.IntegerField(min_value=1, max_length=5, blank=False)
-
-
 class Event(models.Model):
     eventtype = models.CharField(max_length=1000, blank=False)
     timestamp = models.DateTimeField()
