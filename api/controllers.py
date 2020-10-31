@@ -8,10 +8,13 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+
 #from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django_filters.rest_framework import DjangoFilterBackend
 
+# Import serializers
+from api.serializers import *
 
 from django.shortcuts import *
 
@@ -26,6 +29,10 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
 
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.permissions import *
@@ -54,6 +61,102 @@ def xss_example(request):
   """
   return render_to_response('dumb-test-app/index.html',
               {}, RequestContext(request))
+
+
+class DogList(APIView):
+    permission_classes = (AllowAny,)
+    parser_classes = (parsers.JSONParser,parsers.FormParser)
+    renderer_classes = (renderers.JSONRenderer, )
+
+    def get(self, request, format=None):
+        dogs = Dog.objects.all()
+        serializer = DogSerializer(dogs, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = DogSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+
+
+class DogDetail(APIView):
+    permission_classes = (AllowAny,)
+    parser_classes = (parsers.JSONParser,parsers.FormParser)
+    renderer_classes = (renderers.JSONRenderer, )
+
+    def get_object(self, id):
+        try:
+            return Dog.objects.get(id=id)
+        except Dog.DoesNotExist:
+            raise Http404
+
+    def get(self, request, id, format=None):
+
+        dog = self.get_object(id)
+        serializer = DogSerializer(dog)
+        return Response(serializer.data)
+
+    def put(self, request, id, format=None):
+        dog = self.get_object(id)
+        serializer = DogSerializer(dog, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id, format=None):
+        dog = self.get_object(id)
+        dog.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class BreedList(APIView):
+    permission_classes = (AllowAny,)
+    parser_classes = (parsers.JSONParser,parsers.FormParser)
+    renderer_classes = (renderers.JSONRenderer, )
+
+    def get(self, request, format=None):
+        breeds = Breed.objects.all()
+        serializer = BreedSerializer(breeds, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = BreedSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+
+class BreedDetail(APIView):
+    permission_classes = (AllowAny,)
+    parser_classes = (parsers.JSONParser,parsers.FormParser)
+    renderer_classes = (renderers.JSONRenderer, )
+
+    def get_object(self, id):
+        try:
+            return Breed.objects.get(id=id)
+        except Breed.DoesNotExist:
+            raise Http404
+
+    def get(self, request, id, format=None):
+        breed = self.get_object(id)
+        serializer = BreedSerializer(breed)
+        return Response(serializer.data)
+
+    def put(self, request, id, format=None):
+        breed = self.get_object(id)
+        serializer = BreedSerializer(breed, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id, format=None):
+        breed = self.get_object(id)
+        breed.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class Register(APIView):
     permission_classes = (AllowAny,)
