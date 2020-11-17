@@ -13,9 +13,9 @@ from rest_framework import status
 from django.template import RequestContext
 from django_filters.rest_framework import DjangoFilterBackend
 
-# Import serializers
+# import serializers
 from api.serializers import *
-
+from api.serializers import DogSerializer, BreedSerializer
 from django.shortcuts import *
 
 # Import models
@@ -86,28 +86,28 @@ class DogDetail(APIView):
     parser_classes = (parsers.JSONParser,parsers.FormParser)
     renderer_classes = (renderers.JSONRenderer, )
 
-    def get_object(self, id):
+    def get_object(self, pk):
         try:
-            return Dog.objects.get(id=id)
+            return Dog.objects.get(pk=pk)
         except Dog.DoesNotExist:
             raise Http404
 
-    def get(self, request, id, format=None):
+    def get(self, request, pk, format=None):
 
-        dog = self.get_object(id)
+        dog = self.get_object(pk)
         serializer = DogSerializer(dog)
         return Response(serializer.data)
 
-    def put(self, request, id, format=None):
-        dog = self.get_object(id)
+    def put(self, request, pk, format=None):
+        dog = self.get_object(pk)
         serializer = DogSerializer(dog, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id, format=None):
-        dog = self.get_object(id)
+    def delete(self, request, pk, format=None):
+        dog = self.get_object(pk)
         dog.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -133,27 +133,27 @@ class BreedDetail(APIView):
     parser_classes = (parsers.JSONParser,parsers.FormParser)
     renderer_classes = (renderers.JSONRenderer, )
 
-    def get_object(self, id):
+    def get_object(self, pk):
         try:
-            return Breed.objects.get(id=id)
+            return Breed.objects.get(pk=pk)
         except Breed.DoesNotExist:
             raise Http404
 
-    def get(self, request, id, format=None):
-        breed = self.get_object(id)
+    def get(self, request, pk, format=None):
+        breed = self.get_object(pk)
         serializer = BreedSerializer(breed)
         return Response(serializer.data)
 
-    def put(self, request, id, format=None):
-        breed = self.get_object(id)
+    def put(self, request, pk, format=None):
+        breed = self.get_object(pk)
         serializer = BreedSerializer(breed, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id, format=None):
-        breed = self.get_object(id)
+    def delete(self, request, pk, format=None):
+        breed = self.get_object(pk)
         breed.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -162,6 +162,7 @@ class Register(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
+        
         # Login
         username = request.POST.get('username') #you need to apply validators to these
         print username

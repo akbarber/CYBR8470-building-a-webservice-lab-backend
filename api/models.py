@@ -13,7 +13,7 @@ import base64
 class Dog(models.Model):
     name = models.CharField(max_length=50, blank=False)
     age = models.IntegerField()
-    breed = models.ForeignKey('Breed', on_delete=models.CASCADE) #breed foreign key i think looks correct based on django app pt2
+    breed = models.ForeignKey('Breed', on_delete=models.CASCADE, null=True) #, related_name='breeds'
     gender = models.CharField(max_length=10, blank=False)
     color = models.CharField(max_length=25, blank=False)
     favoritefood = models.CharField(max_length=50, blank=False)
@@ -21,17 +21,22 @@ class Dog(models.Model):
  
         
     def __str__(self):
-        return str(self.name) + str(self.breed) + str(self.gender) + str(self.color) + str(self.favoritefood) + str(self.favoritetoy)
+        return str(self.name) + str(self.gender) + str(self.color) + str(self.favoritefood) + str(self.favoritetoy)
 
 class DogAdmin(admin.ModelAdmin):
-    list_display = ('name', 'age', 'breed', 'gender', 'color', 'favoritefood', 'favoritetoy')           
+    list_display = ('name', 'age', 'gender', 'color', 'favoritefood', 'favoritetoy', 'breed')           
 
 class Breed(models.Model):
+    SIZE = (
+        ('Tiny', 'Tiny'),
+        ('Small', 'Small'),
+        ('Medium', 'Medium'),
+        ('Large', 'Large'),
+    )
+# subclasses below if i want to try IntegerChoices    
 
     name = models.CharField(max_length=50, blank=False)
-    #size needs to make sure only accepts the 4 options
-    #SIZE = Choices('Tiny', 'Small', 'Medium', 'Large')
-    size = models.CharField(max_length=6, blank=False) #choices=SIZE, 
+    size = models.CharField(max_length=6, blank=False, choices=SIZE) 
     friendliness = models.IntegerField()
     trainability = models.IntegerField()
     sheddingamount = models.IntegerField()
@@ -65,3 +70,33 @@ class ApiKey(models.Model):
 class ApiKeyAdmin(admin.ModelAdmin):
     list_display = ('owner','key')
  
+
+
+
+#  class Friendliness(models.IntegerChoices):
+#         VERY_UNFRIENDLY = 1
+#         UNFRIENDLY = 2
+#         AVERAGE = 3
+#         VERY_FRIENDLY = 4
+#         VERY_FRIENDLY = 5
+
+#     class Trainability(models.IntegerChoices):
+#         NOT_TRAINABLE = 1
+#         UNFRIENDLY = 2
+#         AVERAGE = 3
+#         VERY_FRIENDLY = 4
+#         VERY_FRIENDLY = 5
+
+#     class Sheddingamount(models.IntegerChoices):
+#         VERY_UNFRIENDLY = 1
+#         UNFRIENDLY = 2
+#         AVERAGE = 3
+#         VERY_FRIENDLY = 4
+#         VERY_FRIENDLY = 5
+
+#     class Exerciseneeds(models.IntegerChoices):
+#         VERY_UNFRIENDLY = 1
+#         UNFRIENDLY = 2
+#         AVERAGE = 3
+#         VERY_FRIENDLY = 4
+#         VERY_FRIENDLY = 5

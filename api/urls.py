@@ -12,9 +12,9 @@ router = routers.DefaultRouter(trailing_slash=False)
 urlpatterns = [
     
     url(r'^dogs', csrf_exempt(controllers.DogList.as_view())),
-    url(r'^dogs/<id>', csrf_exempt(controllers.DogDetail.as_view())),
+    url(r'^dogs/<pk>', csrf_exempt(controllers.DogDetail.as_view())),
     url(r'^breeds', csrf_exempt(controllers.BreedList.as_view())),
-    url(r'^breeds/<id>', csrf_exempt(controllers.BreedDetail.as_view())),
+    url(r'^breeds/<pk>', csrf_exempt(controllers.BreedDetail.as_view())),
     url(r'^session', csrf_exempt(controllers.Session.as_view())),
     url(r'^register', csrf_exempt(controllers.Register.as_view())),
     url(r'^events', csrf_exempt(controllers.Events.as_view())),
